@@ -1,0 +1,38 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      php: 7.3 
+    commands:
+      - echo Installing PHP dependencies...
+      - curl -sS https://getcomposer.org/installer | php
+      - php composer.phar install
+  pre_build:
+    commands:
+      - echo Pre-build phase...
+      - php -v # Output the PHP version for debugging
+      - composer install # Ensure all dependencies are installed
+  build:
+    commands:
+      - echo Build phase...
+      - echo Running tests...
+      - ./vendor/bin/phpunit --coverage-text
+  post_build:
+    commands:
+      - echo Post-build phase...
+      - echo Build completed successfully.
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
+
+cache:
+  paths:
+    - '/root/.composer/cache'
+
+env:
+  shell: bash
+  variables:
+    COMPOSER_HOME: /root/.composer
